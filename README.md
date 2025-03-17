@@ -27,4 +27,11 @@ If you do not define an additional parameter instructions will be printed to sho
 
 ## FAQs / Troubleshooting
 
-  1) You may need to adjust the bash shebang command at the top of the shell scripts from #!/opt/homebrew/bin/bash to #!/bin/bash depending on your systems shell and path layouts.
+  1) If you have installed bash through homebrew and depending on your systems shell and path layouts you may need to adjust the bash shebang command at the top of the shell scripts from this:
+```
+#!/bin/bash
+``` 
+To this:
+```
+#!/opt/homebrew/bin/bash 
+```

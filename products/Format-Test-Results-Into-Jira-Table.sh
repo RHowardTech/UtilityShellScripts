@@ -1,4 +1,4 @@
-#!/opt/homebrew/bin/bash
+#!/bin/bash
 BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
 source "${BASE_DIR}/Declarations.sh"
 
