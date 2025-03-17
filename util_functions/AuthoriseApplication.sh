@@ -26,7 +26,7 @@ authoriseApplication() {
     fi
 
     # Authorise application
-    authorisation_output=$(xattr -d com.apple.quarantine $path 2>&1)
+    authorisation_output=$(xattr -d com.apple.quarantine "${path}" 2>&1)
     authorisation_status=$?
 
     # In cases where there is an error code.

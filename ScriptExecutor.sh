@@ -78,7 +78,7 @@ fi
 # This loop will select the product that for browsing based on user selection.
 while true; do
     # Get the list of product files from the directory and add an 'exit' option
-    products=($(ls $BASE_DIR/product_listings/ | grep '\.json$' | cut -f 1 -d '.') "exit")
+    products=($(ls "${BASE_DIR}"/product_listings/ | grep '\.json$' | cut -f 1 -d '.') "exit")
     [ -z "$1" ] && \
         product=$(echo "${products[@]}" | sed -e 's/ /\n/g' -e 's/_/ /g' | fzf --height ~100% --border=rounded --border-label=" Select the product you wish to use ") ||
         product="$1"

@@ -109,7 +109,7 @@ createJiraFormattedTableFromTestInput() {
         report_link=""
 
         # Trim whitespace and split by " - ".
-        entry=$(echo $entry | xargs)  # Trim leading/trailing spaces.
+        entry=$(echo "${entry}" | xargs)  # Trim leading/trailing spaces.
 
         service_tag=$(echo "$entry" | awk -F" - " '{print $1}')
         url=$(echo "$entry" | awk -F" - " '{print $2}')
@@ -135,7 +135,7 @@ createJiraFormattedTableFromTestInput() {
         fi
 
         # Clean up the build_no in case it contains 'failed -'.
-        build_no=$(echo "$build_no" | sed 's/[^0-9]*//g') # Keep only the digits, remove everything else.
+        build_no=$(echo "${build_no}" | sed 's/[^0-9]*//g') # Keep only the digits, remove everything else.
 
         # Only prepend '#' if the build number is not empty.
         if [[ -n "$build_no" ]]; then

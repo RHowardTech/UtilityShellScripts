@@ -31,7 +31,10 @@ upgradeChromeDriverViaBrew() {
     fi
 
     # Capturing the brew_chromeDriver_path for later use. The command sed (stream edit) uses the regular expression below.
-    brew_chromeDriver_path=$(echo "$upgrade_output" | sed -n "s/.*Linking Binary 'chromedriver' to '\([^']*\).*/\1/p'")
+    if [[ -z ${brew_chromeDriver_path} ]]; then
+        brew_chromeDriver_path=$(echo "$upgrade_output" | sed -n "s/.*Linking Binary 'chromedriver' to '\([^']*\).*/\1/p'")
+        echo -e "${PURPLE}Your chromeDriver path is '${OFF}${BLUE}${brew_chromeDriver_path}${OFF}${PURPLE}' please save this in the '${OFF}${BLUE}Declarations.sh${OFF}${PURPLE}' file for future use.${OFF}"
+    fi
         # Pattern sections - modifier/ input & capture groups / output and capture groups / modifier.
         # Simple example - s/.*text.*/output/p
         # s/ - substitute, tells sed to search for a pattern and replace it with something else.

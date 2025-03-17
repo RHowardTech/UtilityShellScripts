@@ -72,9 +72,13 @@ saveAndReplaceJSONDataSet() {
         local uid=""
         local full_name=""
         local date_of_birth=""
+        local nationality=""
         local status_code=""
-        local file_name=$(basename "${file}")
-        local file_directory=$(dirname "${file}")
+
+        local file_name=""
+        file_name=$(basename "${file}")
+        local file_directory=""
+        file_directory=$(dirname "${file}")
 
         # Safety check for unknown files.
         if [ ! -f "${file}" ]; then
@@ -90,6 +94,7 @@ saveAndReplaceJSONDataSet() {
         uid=$(echo "$path" | awk -F'/' '{print $(NF-1)}')
         full_name=$(jq -r '.response.jsonBody.fullName' "$file_name")
         date_of_birth=$(jq -r '.response.jsonBody.dateOfBirth' "$file_name")
+        nationality=$(jq -r '.response.jsonBody.nationality' "$file_name")
         status_code=$(jq -r '.response.status' "$file_name")
 
         # Check if required fields have stored values  - note this should be changed based on the goals of the script.
@@ -123,6 +128,7 @@ saveAndReplaceJSONDataSet() {
             --arg path "/user/details/UID/$uid" \
             --arg fullName "$full_name" \
             --arg dateOfBirth "$date_of_birth" \
+            --arg nationality "$nationality" \
             --arg uid "$uid" \
             '.request.path = $path
             | .response.jsonBody = {

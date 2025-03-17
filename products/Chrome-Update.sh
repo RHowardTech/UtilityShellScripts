@@ -51,7 +51,7 @@ updateChromeDriverAndCreateNewLinks() {
           if [ -f "${dir}/${target_file}" ]; then
               echo -e "${CYAN}Found${OFF} ${ORANGE}${target_file}${OFF} ${CYAN}in directory: '${OFF}${ORANGE}${dir}${OFF}${CYAN}', updating reference now:${OFF}"
               confirmed_directories+=("${ORANGE}${file_directory}${OFF}")
-              cd "$dir"
+              checkAndNavigate "$dir"
 
               echo -e "${CYAN}Removing old file.${OFF}"
               rm "$target_file"
@@ -97,7 +97,7 @@ updateChromeDriverAndCreateNewLinks() {
               done
 
               # Navigate up a level to continue the checking of other repositories.
-              cd ../
+              checkAndNavigate ../
           fi
       fi
     done
@@ -110,7 +110,7 @@ updateChromeDriverAndCreateNewLinks() {
     fi
 
     # Close the script.
-    cd "$return_location"
+    checkAndNavigate "$return_location"
     echo -e "${GREEN}ChromeDriver General Update Complete!${OFF} \n"
 }
 

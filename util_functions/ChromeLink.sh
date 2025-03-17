@@ -62,15 +62,15 @@ createLinkToBrewChromeDriverFromList() {
         fi
 
         # Returning to the navigation start position.
-        cd ~
-        cd "${main_repos_path}"
+        checkAndNavigate ~
+        checkAndNavigate "${main_repos_path}"
     done
 
     # Ensuring that the ChromeDriver has been authorised.
     authoriseApplication "${brew_chromeDriver_path}"
 
     # Close the script.
-    cd "$return_location"
+    checkAndNavigate "$return_location"
     echo -e "${GREEN}ChromeDriver Linking Complete!${OFF} \n"
 }
 
