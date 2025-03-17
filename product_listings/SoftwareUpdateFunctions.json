@@ -1,0 +1,5 @@
+{
+  "Chrome-Update": "updateChromeDriverAndCreateNewLinks",
+  "Chrome-Link": "createLinkToBrewChromeDriverFromList",
+  "Chrome-Replace": "replaceLinkToBrewChromeDriverFromList"
+}
