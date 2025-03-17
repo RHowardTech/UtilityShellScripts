@@ -1,0 +1,4 @@
+{
+  "Format-Test-Results-Into-Jira-Table": "createJiraFormattedTableFromTestInput",
+  "Tag-Finder": "tagFinder"
+}
