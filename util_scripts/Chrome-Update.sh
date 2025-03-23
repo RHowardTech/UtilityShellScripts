@@ -1,11 +1,11 @@
 #!/bin/bash
 BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
 source "${BASE_DIR}/Declarations.sh"
-source "${BASE_DIR}/util_functions/AuthoriseApplication.sh"
-source "${BASE_DIR}/util_functions/CheckAndNavigate.sh"
-source "${BASE_DIR}/util_functions/OperatingSystemCheck.sh"
-source "${BASE_DIR}/util_functions/UpgradeChromeDriverViaBrew.sh"
-source "${BASE_DIR}/util_functions/ChromeLink.sh"
+source "${BASE_DIR}/util_scripts/util_helpers/AuthoriseApplication.sh"
+source "${BASE_DIR}/util_scripts/util_helpers/CheckAndNavigate.sh"
+source "${BASE_DIR}/util_scripts/util_helpers/OperatingSystemCheck.sh"
+source "${BASE_DIR}/util_scripts/util_helpers/UpgradeChromeDriverViaBrew.sh"
+source "${BASE_DIR}/util_scripts/util_helpers/ChromeLink.sh"
 
 
 # Please see README.md for dependencies details.

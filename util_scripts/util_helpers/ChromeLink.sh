@@ -1,10 +1,10 @@
 #!/bin/bash
 BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
 source "${BASE_DIR}/Declarations.sh"
-source "${BASE_DIR}/util_functions/AuthoriseApplication.sh"
-source "${BASE_DIR}/util_functions/CheckAndNavigate.sh"
-source "${BASE_DIR}/util_functions/FilterListsForMatches.sh"
-source "${BASE_DIR}/util_functions/OperatingSystemCheck.sh"
+source "${BASE_DIR}/util_scripts/util_helpers/AuthoriseApplication.sh"
+source "${BASE_DIR}/util_scripts/util_helpers/CheckAndNavigate.sh"
+source "${BASE_DIR}/util_scripts/util_helpers/FilterListsForMatches.sh"
+source "${BASE_DIR}/util_scripts/util_helpers/OperatingSystemCheck.sh"
 
 # Please see README.md for dependencies details.
 # Remember to complete the Dependency section before running any scripts.

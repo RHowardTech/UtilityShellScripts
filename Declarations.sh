@@ -38,7 +38,7 @@ chrome_repos=(
 # Pathway of the repository to make changes in.
 replace_data_repo_path=""                 #"UtilityShellScripts"
 # Pathway to use as a filter to specify replacement options.
-replace_data_directory_filter_path=""     #"products"
+replace_data_directory_filter_path=""     #"util_scripts"
 # Content to search for to locate all files to be replaced.
 replace_data_search_term=""               #"file identifying text"
 

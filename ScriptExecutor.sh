@@ -26,7 +26,7 @@ selectFunction(){
     # This loop will select the method for execution based on user selection.
     while true; do
         # Set the path for the JSON config File
-        configFile="${BASE_DIR}/product_listings/"$(echo $product | sed 's/ /_/g')".json"
+        configFile="${BASE_DIR}/config/product_listings/"$(echo $product | sed 's/ /_/g')".json"
 
         # Get the list of methods from the config file and add a 'back' option.
         methods=($(jq -r 'keys_unsorted[]' $configFile) "back")
@@ -50,8 +50,8 @@ selectFunction(){
                         # Execute the command.
                         echo -e "${CYAN}-----------------------------------------------------------------------------------------------------${OFF}
                         ${GREEN}Executing the '${OFF}${ORANGE}${method}${OFF}${GREEN}' method from the '${OFF}${ORANGE}${product}${OFF}${GREEN}' product:${OFF}
-                        ${ORANGE}${BASE_DIR}/products/${method}.sh $cmd${OFF}" | sed 's/^[ \t]*//' | cat
-                        "${BASE_DIR}""/products/""${method}"".sh" "${cmd}"
+                        ${ORANGE}${BASE_DIR}/util_scripts/${method}.sh $cmd${OFF}" | sed 's/^[ \t]*//' | cat
+                        "${BASE_DIR}""/util_scripts/""${method}"".sh" "${cmd}"
                     else
                         echo "${RED}Error:${OFF} ${YELLOW}No command found for method${OFF} ${ORANGE}${method}${OFF}"
                         exit 1
@@ -78,7 +78,7 @@ fi
 # This loop will select the product that for browsing based on user selection.
 while true; do
     # Get the list of product files from the directory and add an 'exit' option
-    products=($(ls "${BASE_DIR}"/product_listings/ | grep '\.json$' | cut -f 1 -d '.') "exit")
+    products=($(ls "${BASE_DIR}"/config/product_listings/ | grep '\.json$' | cut -f 1 -d '.') "exit")
     [ -z "$1" ] && \
         product=$(echo "${products[@]}" | sed -e 's/ /\n/g' -e 's/_/ /g' | fzf --height ~100% --border=rounded --border-label=" Select the product you wish to use ") ||
         product="$1"
