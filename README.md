@@ -7,14 +7,18 @@ This is a bash script designed primarily for use on **Mac devices**, however som
 
 This script assumes the following in order to function properly:
   1) That you have updated the Declarations section of the bash file with your local system's values.
-  2) Any existing ChromeDriver files on your system that you want to be updated must be named exactly "chromedriver".
-  3) The script assumes that all of the repositories that you wish to update are stored in a central localtion. If not then you can specify detailed pathways in the various file definition sections.
-  4) That you have homebrew installed. If not details can be found at https://brew.sh/
-  5) That you have bash-v4+ (https://www.gnu.org/software/bash/) and fuzzy finder (https://github.com/junegunn/fzf) installed. 
-  You can install using Homebrew with commands:
+  2) The script assumes that all the repositories that you wish to update are stored in a central localtion. If not then you can specify detailed pathways in the various file definition sections.
+  3) That you have the following software installed. 
+     1) Homebrew (https://brew.sh/).
+     2) Bash-v4+ (https://www.gnu.org/software/bash/) .
+     3) Fuzzy finder (https://github.com/junegunn/fzf). 
+     4) JQ (https://jqlang.org/download/).
+
+You can also use Homebrew to install these software programs with commands:
   ```
   brew install fzf
   brew install bash
+  brew install jq
   ```
 
 ## Running This Script
@@ -27,11 +31,11 @@ If you do not define an additional parameter instructions will be printed to sho
 
 ## FAQs / Troubleshooting
 
-  1) If you have installed bash through homebrew and depending on your systems shell and path layouts you may need to adjust the bash shebang command at the top of the shell scripts from this:
+  1) Depending on your system shell and path layout you may need to adjust the bash shebang command at the top of the shell scripts from this:
 ```
-#!/bin/bash
+#!/bin/bash 
 ``` 
 To this:
 ```
-#!/opt/homebrew/bin/bash 
+#!/opt/homebrew/bin/bash
 ```
