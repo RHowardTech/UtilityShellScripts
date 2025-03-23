@@ -12,6 +12,11 @@ source "${BASE_DIR}/util_scripts/util_helpers/FilterAndReturnListOfFiles.sh"
 saveAndReplaceJSONDataSet() {
 # This function checks specified files for an expected data, saves those values and replaces the data section with a newly specified format.
 
+    # Warn the user that the script requires manual adjustment.
+    echo -e "${YELLOW}WARN: This script requires manual adjustment to change files to the format you desire.
+              Without being sure of your changes this script has the power to make large scale adjustments to many files.
+              Please ensure you have correctly applied all changes before running this script.${OFF}" | sed 's/^[ \t]*//' | cat
+
     # Request user input if values not stored.
     if [[ -z "${replace_data_repo_path}" || -z "${replace_data_directory_filter_path}" || -z "${replace_data_search_term}" ]]; then
         echo -e "${YELLOW}WARN: Missing definitions, please define the desired values in the '${OFF}${ORANGE}Data Replacement Declarations${OFF}${YELLOW}' of the '${OFF}${ORANGE}Declarations.sh${OFF}${YELLOW}' file${OFF}
@@ -48,6 +53,18 @@ saveAndReplaceJSONDataSet() {
         # Mapping the file list so that they can be processed by the script.
         mapfile -t files_to_process <<< "$(echo "$find_output" | tr -d '\r')"
         echo -e "${GREEN}Files to process successfully passed to the data replacement script.${OFF}\n"
+    fi
+
+    # Confirm that the user has made changes and is ready to start the script.
+    echo -e "${PURPLE}Please confirm you have made all required script changes and are ready for execution${OFF} ${BLUE}Y${OFF} ${PURPLE}:${OFF} ${BLUE}N${OFF}"
+    read -r user_response
+    if [[ "${user_response}" =~ ^y ]]; then
+        echo -e "${CYAN}Confirmed Response:${OFF} ${ORANGE}$user_response${OFF}
+
+                ${GREEN}Data replacing started:${OFF}" | sed 's/^[ \t]*//' | cat
+    else
+        echo -e "${CYAN}Confirmed Response:${OFF} ${ORANGE}Not yet ready to start replacer, script exited.${OFF}"
+        exit 1
     fi
 
     # Navigate to the loop start location.
