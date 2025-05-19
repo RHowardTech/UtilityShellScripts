@@ -1,15 +1,14 @@
-#!/bin/bash
-BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
-source "${BASE_DIR}/Declarations.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/AuthoriseApplication.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/CheckAndNavigate.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/OperatingSystemCheck.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/UpgradeChromeDriverViaBrew.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/ChromeLink.sh"
+#!/usr/bin/env bash
+SHELL_SCRIPT_BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
+source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/AuthoriseApplication.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/CheckAndNavigate.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/OperatingSystemCheck.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/UpgradeChromeDriverViaBrew.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/ChromeLink.sh"
 
 
 # Please see README.md for dependencies details.
-# Remember to complete the Dependency section before running any scripts.
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -18,7 +17,7 @@ updateChromeDriverAndCreateNewLinks() {
 # new copy if the Repos are directly inside your specified main_repos_path or defined in the chrome_repos declaration.
 
     # Operating system check, this script will only work for Mac.
-    operatingSystemCheck "Mac"
+    operatingSystemCheck "macOS"
 
     #Update Brew's chromeDriver:
     # Capture the output from the command, adjust the output to capture the terminal message rather than the exist code.
@@ -60,7 +59,7 @@ updateChromeDriverAndCreateNewLinks() {
 
               # Error handling
               if [[ $link_output == "ln: chromedriver: No such file or directory" ]]; then
-                  echo -e "${RED}Error:${OFF}${YELLOW} No such file or directory.${OFF}
+                  echo -e "${RED}ERROR:${OFF}${YELLOW} No such file or directory.${OFF}
                           ${YELLOW}ChromeDriver pathway is likely incorrectly defined, please check declarations. Exiting script.${OFF}
                           " | sed 's/^[ \t]*//' | cat
                   exit 1
@@ -90,7 +89,7 @@ updateChromeDriverAndCreateNewLinks() {
 
                   # If the process has not cleared end the process and notify the user.
                   elif (( SECONDS - START_TIME >= TIMEOUT)); then
-                      echo -e "${RED}Timeout reached:${OFF} ${YELLOW}Exiting the ChromeDriver checking loop for ${OFF}${ORANGE}${dir}${OFF}${YELLOW}, suggest manually confirming that the file copy is functioning.${OFF} \n"
+                      echo -e "${RED}ERROR - Timeout reached:${OFF} ${YELLOW}Exiting the ChromeDriver checking loop for ${OFF}${ORANGE}${dir}${OFF}${YELLOW}, suggest manually confirming that the file copy is functioning.${OFF} \n"
                       kill -SIGINT $ProcessID
                       break
                   fi
@@ -112,29 +111,23 @@ updateChromeDriverAndCreateNewLinks() {
     # Close the script.
     checkAndNavigate "$return_location"
     echo -e "${GREEN}ChromeDriver General Update Complete!${OFF} \n"
+    exit 0
 }
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
-# This section contains the local executor for the ChromeDriverUpdates.sh script.
+# This section contains the local executor for the Chrome-Update.sh script.
 
 method_name="$1"
 
-
 # Check that a value has been passed.
-if [ -z "$method_name" ]; then
-    echo -e "${RED}Error:${OFF} ${YELLOW}No parameter passed for method selection. Choose a valid option:${OFF}
-            ${ORANGE}updateChromeDriverAndCreateNewLinks${OFF}
-            " | sed 's/^[ \t]*//' | cat
-    exit 1
-fi
+[ -z "$method_name" ] && \
+echo -e "${RED}ERROR:${OFF} ${YELLOW}No parameter passed for method selection. Choose a valid option:${OFF}
+        ${ORANGE}updateChromeDriverAndCreateNewLinks${OFF}
+        " | sed 's/^[ \t]*//' | cat && exit 1
 
 # Ensure that the value has been passed as a function.
-if declare -F "$1" > /dev/null; then
-    "$1"
-else
-    echo -e "${RED}Error:${OFF} ${YELLOW}Invalid method selection. Choose from:${OFF}
-            ${ORANGE}updateChromeDriverAndCreateNewLinks${OFF}
-            " | sed 's/^[ \t]*//' | cat
-    exit 1
-fi
+declare -F "$1" > /dev/null && "$1" || \
+echo -e "${RED}ERROR:${OFF} ${YELLOW}Invalid method selection. Choose from:${OFF}
+        ${ORANGE}updateChromeDriverAndCreateNewLinks${OFF}
+        " | sed 's/^[ \t]*//' | cat && exit 1

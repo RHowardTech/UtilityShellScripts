@@ -1,13 +1,12 @@
-#!/bin/bash
-BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
-source "${BASE_DIR}/Declarations.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/AuthoriseApplication.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/CheckAndNavigate.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/OperatingSystemCheck.sh"
+#!/usr/bin/env bash
+SHELL_SCRIPT_BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
+source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/AuthoriseApplication.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/CheckAndNavigate.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/OperatingSystemCheck.sh"
 
 
 # Please see README.md for dependencies details.
-# Remember to complete the Dependency section before running any scripts.
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -16,7 +15,7 @@ replaceLinkToBrewChromeDriverFromList() {
 # This function assumes that you already have a copy of ChromeDriver installed via brew and is mainly intended for reset purposes.
 
     # Operating system check, this script will only work for Mac.
-    operatingSystemCheck "Mac"
+    operatingSystemCheck "macOS"
 
     # First time user prompt.
     if [[ "${#chrome_repos[@]}" -eq 0 ]]; then
@@ -58,28 +57,23 @@ replaceLinkToBrewChromeDriverFromList() {
     # Close the script.
     checkAndNavigate "$return_location"
     echo -e "${GREEN}ChromeDriver Replacement Complete!${OFF} \n"
+    exit 0
 }
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
-# This section contains the local executor for the ChromeDriverUpdates.sh script.
+# This section contains the local executor for the Chrome-Replace.sh script.
 
 method_name="$1"
 
 # Check that a value has been passed.
-if [ -z "$method_name" ]; then
-    echo -e "${RED}Error:${OFF} ${YELLOW}No parameter passed for method selection. Choose a valid option:${OFF}
-            ${ORANGE}replaceLinkToBrewChromeDriverFromList${OFF}
-            " | sed 's/^[ \t]*//' | cat
-    exit 1
-fi
+[ -z "$method_name" ] && \
+echo -e "${RED}ERROR:${OFF} ${YELLOW}No parameter passed for method selection. Choose a valid option:${OFF}
+        ${ORANGE}replaceLinkToBrewChromeDriverFromList${OFF}
+        " | sed 's/^[ \t]*//' | cat && exit 1
 
 # Ensure that the value has been passed as a function.
-if declare -F "$1" > /dev/null; then
-    "$1"
-else
-    echo -e "${RED}Error:${OFF} ${YELLOW}Invalid method selection. Choose from:${OFF}
-            ${ORANGE}replaceLinkToBrewChromeDriverFromList${OFF}
-            " | sed 's/^[ \t]*//' | cat
-    exit 1
-fi
+declare -F "$1" > /dev/null && "$1" || \
+echo -e "${RED}ERROR:${OFF} ${YELLOW}Invalid method selection. Choose from:${OFF}
+        ${ORANGE}replaceLinkToBrewChromeDriverFromList${OFF}
+        " | sed 's/^[ \t]*//' | cat && exit 1

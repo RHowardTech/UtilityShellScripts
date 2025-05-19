@@ -2,16 +2,29 @@
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
-# Universal Declarations
+# Universal Pre-set Variable Declarations:
+
+# Determine home directory in a cross-platform safe way.
+if [[ -n "$HOME" ]]; then
+    USER_ROOT_PATH="$HOME"
+elif [[ -n "$USERPROFILE" ]]; then
+    USER_ROOT_PATH="$USERPROFILE"
+elif [[ -n "$HOMEPATH" && -n "$HOMEDRIVE" ]]; then
+    USER_ROOT_PATH="${HOMEDRIVE}${HOMEPATH}"
+else
+    echo -e "${RED}ERROR:${OFF} ${YELLOW}Cannot determine the user's home directory, exiting script.${OFF}" && exit 1
+fi
 
 # Pathway to the directory structure that your repositories are kept in.
-main_repos_path=""        #"/Users/user.name/IdeaProjects"
-#Please list your OS as "Mac", "Windows" or "Linux"
-operating_system=""       #"Mac"
+main_repos_path="${USER_ROOT_PATH}/IdeaProjects"
+return_location=$(pwd)
+countTool=0
+user_flag=0
+user_response=""
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
-# Chrome Updater Declarations
+# Chrome Updater Declarations:
 
 # This is the pathway defined by homebrew for your chromedriver installation.
 #    - If this differs for your system please update this value.
@@ -30,9 +43,9 @@ chrome_repos=(
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
-# Data Replacement Declarations
+# Data Replacement Declarations:
 
-# Specify the file paths required for various replace data functions. Ensure these are modified and the replacment data specified in the function as
+# Specify the file paths required for various replace data functions. Ensure these are modified and the replacement data specified in the function as
 # well as saving the file before running the script!
 
 # Pathway of the repository to make changes in.
@@ -44,18 +57,7 @@ replace_data_search_term=""               #"file identifying text"
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
-# Pre-set Variable Declarations
-#     - No need to fill anything here, these are predefined values for the script's printing.
-
-return_location=$(pwd)
-countTool=0
-user_flag=0
-user_response=""
-
-# ——————————————————————————————————————————————————————————————————————————————————————————————————————
-
-# Colour Declarations
-#     - No need to fill anything here, these are predefined values for the script's printing.
+# Colour Declarations:
 
 PURPLE="\033[35;01m";
 # Purple is used for direct requests for user entry.
@@ -87,5 +89,18 @@ OFF="\033[0m";
 #WHITE="\033[97m";
 #GRAY="\033[90m";
 #BOLD="\033[1m"
+
+# ——————————————————————————————————————————————————————————————————————————————————————————————————————
+
+# Script Logging Declarations:
+
+# This section controls any universal logs declared within these variables, you can locally make changes to these logging
+# settings to return different levels of detailed message when running scrips.
+
+# 1 for on, 0 for off
+DEBUG_LOGGING=0
+INFO_LOGGING=1
+WARNING_LOGGING=1
+ERROR_LOGGING=1
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————

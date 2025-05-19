@@ -1,9 +1,7 @@
-#!/bin/bash
-BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
-source "${BASE_DIR}/Declarations.sh"
+#!/usr/bin/env bash
+source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
 
 # Please see README.md for dependencies details.
-# Remember to complete the Dependency section before running any scripts.
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -16,7 +14,7 @@ checkAndNavigate() {
 
       # Check that path has been defined.
       if [ -z "${path}" ]; then
-          echo -e "${RED}Error:${OFF} ${YELLOW}No value has been provided for the navigation pathway.${OFF} \n"
+          echo -e "${RED}ERROR:${OFF} ${YELLOW}No value has been provided for the navigation pathway.${OFF} \n"
           exit 1
       fi
 
@@ -27,7 +25,7 @@ checkAndNavigate() {
 
       # Navigate to the given folder, suppress any error messages and respond if there are.
       cd "${path}" 2>/dev/null || {
-          echo "${RED}Error:${OFF} ${YELLOW}The file or directory '${OFF}${ORANGE}${messageDisplayPath}${OFF}${YELLOW}' could not be found, check defined file references.${OFF}"
+          echo -e "${RED}ERROR:${OFF} ${YELLOW}The file or directory '${OFF}${ORANGE}${messageDisplayPath}${OFF}${YELLOW}' could not be found, check defined file references.${OFF}"
           exit 1
       }
 

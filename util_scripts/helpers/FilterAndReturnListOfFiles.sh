@@ -1,9 +1,7 @@
-#!/bin/bash
-BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
-source "${BASE_DIR}/Declarations.sh"
+#!/usr/bin/env bash
+source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
 
 # Please see README.md for dependencies details.
-# Remember to complete the Dependency section before running any scripts.
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -17,7 +15,7 @@ findAndReturnListOfFiles() {
 
     # Validate that all parameters are passed
     if [[ -z "$main_repos_path" || -z "$specific_repo_path" || -z "$repo_internal_directory_path" || -z "$data_filter_path" ]]; then
-        echo -e "${RED}Error:${OFF} ${YELLOW}Missing required parameters.${OFF}
+        echo -e "${RED}ERROR:${OFF} ${YELLOW}Missing required parameters.${OFF}
         ${PURPLE}Please ensure all of the following values are passed in order with the findAndReturnListOfFiles() function:${OFF}
         ${ORANGE}<main_repos_path> <specific_repo_path> <repo_internal_directory_path> <data_filter_path>${OFF}" | sed 's/^[ \t]*//' | cat >&2
         return 1 # Exit early if no files are found

@@ -1,9 +1,7 @@
-#!/bin/bash
-BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
-source "${BASE_DIR}/Declarations.sh"
+#!/usr/bin/env bash
+source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
 
 # Please see README.md for dependencies details.
-# Remember to complete the Dependency section before running any scripts.
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -11,15 +9,15 @@ authoriseApplication() {
 # This function is reusable code for authorising an application. For use in other functions.
 
     # Check OS condition.
-    operatingSystemCheck "Mac"
+    operatingSystemCheck "macOS"
 
     # Defining passed parameters as expected values.
     local path="$1"
 
     # Check if the path has been defined and printing the appropriate response.
     if [ -z "${path}" ]; then
-        echo -e "${RED}Error:${OFF} ${YELLOW}No pathway has been provided for the application to be authorised.${OFF} \n"
-        exit 1
+        echo -e "${RED}ERROR:${OFF} ${YELLOW}No pathway has been provided for the application to be authorised.${OFF} \n"
+        return 1
     else
       app_name=$(basename "${path}")
       echo -e "\n${CYAN}Authorising the given application:${OFF} ${ORANGE}'${app_name}'${OFF}"
@@ -39,7 +37,7 @@ authoriseApplication() {
 
         # Otherwise stop the script.
         else
-          echo -e "${RED}The application has not been authorised, script exited.${OFF} \n"
+          echo -e "${RED}ERROR:${OFF} ${YELLOW}The application has not been authorised, script exited.${OFF} \n"
           exit 1
         fi
     fi

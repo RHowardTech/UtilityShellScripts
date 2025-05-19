@@ -1,13 +1,11 @@
-#!/bin/bash
-BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
-source "${BASE_DIR}/Declarations.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/AuthoriseApplication.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/CheckAndNavigate.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/FilterListsForMatches.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/OperatingSystemCheck.sh"
+#!/usr/bin/env bash
+source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/AuthoriseApplication.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/CheckAndNavigate.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/FilterListsForMatches.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/OperatingSystemCheck.sh"
 
 # Please see README.md for dependencies details.
-# Remember to complete the Dependency section before running any scripts.
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -16,7 +14,7 @@ createLinkToBrewChromeDriverFromList() {
 # copy of ChromeDriver for any missing instances. For use in other functions.
 
     # Operating system check, this script will only work for Mac.
-    operatingSystemCheck "Mac"
+    operatingSystemCheck "macOS"
 
     echo -e "${GREEN}ChromeDriver linking from defined list started:${OFF}"
     target_file="chromedriver"
@@ -45,7 +43,7 @@ createLinkToBrewChromeDriverFromList() {
 
             # If the ChromeDriver file is found then echo a message and move on.
             if [ -f "$target_file" ]; then
-                echo -e "${RED}Linking Skipped:${OFF}${YELLOW} ChromeDriver already exists in ${OFF}${ORANGE}${dir}${OFF}"
+                echo -e "${RED}ERROR - Linking Skipped:${OFF}${YELLOW} ChromeDriver already exists in ${OFF}${ORANGE}${dir}${OFF}"
 
             # If the ChromeDriver file is not found, link the file and echo a message.
             else
@@ -72,6 +70,7 @@ createLinkToBrewChromeDriverFromList() {
     # Close the script.
     checkAndNavigate "$return_location"
     echo -e "${GREEN}ChromeDriver Linking Complete!${OFF} \n"
+    exit 0
 }
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————

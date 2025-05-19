@@ -1,9 +1,7 @@
-#!/bin/bash
-BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
-source "${BASE_DIR}/Declarations.sh"
+#!/usr/bin/env bash
+source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
 
 # Please see README.md for dependencies details.
-# Remember to complete the Dependency section before running any scripts.
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -24,7 +22,7 @@ upgradeChromeDriverViaBrew() {
 
     # Error handling.
     elif [ ${upgrade_status} -ne 0 ]; then
-        echo -e "${RED}ChromeDriver update failed!${OFF}
+        echo -e "${RED}ERROR:${OFF} ${YELLOW}ChromeDriver update failed!${OFF}
                 ${upgrade_output}
                 " | sed 's/^[ \t]*//' | cat
         exit 1

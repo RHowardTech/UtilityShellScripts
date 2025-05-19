@@ -1,11 +1,10 @@
-#!/bin/bash
-BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
-source "${BASE_DIR}/Declarations.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/CheckAndNavigate.sh"
-source "${BASE_DIR}/util_scripts/util_helpers/FilterAndReturnListOfFiles.sh"
+#!/usr/bin/env bash
+SHELL_SCRIPT_BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
+source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/CheckAndNavigate.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/FilterAndReturnListOfFiles.sh"
 
 # Please see README.md for dependencies details.
-# Remember to complete the Dependency section before running any scripts.
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -13,7 +12,7 @@ saveAndReplaceJSONDataSet() {
 # This function checks specified files for an expected data, saves those values and replaces the data section with a newly specified format.
 
     # Warn the user that the script requires manual adjustment.
-    echo -e "${YELLOW}WARN: This script requires manual adjustment to change files to the format you desire.
+    echo -e "${YELLOW}WARN: This script requires manual adjustments to change files to the format you desire.
               Without being sure of your changes this script has the power to make large scale adjustments to many files.
               Please ensure you have correctly applied all changes before running this script.${OFF}" | sed 's/^[ \t]*//' | cat
 
@@ -25,29 +24,27 @@ saveAndReplaceJSONDataSet() {
     if [ -z "${replace_data_repo_path}" ]; then
         echo -e "${PURPLE}Please enter the path to the required repository from the context of your '${OFF}${ORANGE}${main_repos_path}${OFF}${PURPLE}':${OFF}"
         read -r user_response
-        echo -e "${CYAN}Release pipeline: ${OFF}${ORANGE}$user_response${OFF}"
+        echo -e "${CYAN}Release pipeline:${OFF} ${ORANGE}$user_response${OFF}"
         replace_data_repo_path="${user_response}"
     fi
     if [ -z "${replace_data_directory_filter_path}" ]; then
         echo -e "${PURPLE}Please enter the path to the required directory from the repository root:${OFF}"
         read -r user_response
-        echo -e "${CYAN}Data directory filter path: ${OFF}${ORANGE}$user_response${OFF}"
+        echo -e "${CYAN}Data directory filter path:${OFF} ${ORANGE}$user_response${OFF}"
         replace_data_directory_filter_path="${user_response}"
     fi
     if [ -z "${replace_data_search_term}" ]; then
         echo -e "${PURPLE}Please enter the desired search term within the filtered files:${OFF}"
         read -r user_response
-        echo -e "${CYAN}Data search term: ${OFF}${ORANGE}$user_response${OFF}"
+        echo -e "${CYAN}Data search term:${OFF} ${ORANGE}$user_response${OFF}"
         replace_data_search_term="${user_response}"
     fi
-
-    echo -e "\n${GREEN}Data replacing started:${OFF}"
 
     # Utilising the findAndReturnListOfFiles() function to return files to be used  - note these values set in declarations should be changed based on the goals of the script.
     find_output=$(findAndReturnListOfFiles "$main_repos_path" "$replace_data_repo_path" "$replace_data_directory_filter_path" "$replace_data_search_term")
     find_status=$?
     if (( find_status != 0 )); then
-        echo -e "${RED}Exiting script:${OFF} ${YELLOW}No files passed to process.${OFF}\n"
+        echo -e "${RED}ERROR - Exiting Script:${OFF} ${YELLOW}No files passed to process.${OFF}\n"
         exit 1
     else
         # Mapping the file list so that they can be processed by the script.
@@ -56,15 +53,16 @@ saveAndReplaceJSONDataSet() {
     fi
 
     # Confirm that the user has made changes and is ready to start the script.
-    echo -e "${PURPLE}Please confirm you have made all required script changes and are ready for execution${OFF} ${BLUE}Y${OFF} ${PURPLE}:${OFF} ${BLUE}N${OFF}"
+    echo -e "${PURPLE}Please confirm you have made all required script changes and are ready for execution ${OFF}${BLUE}Y${OFF}${PURPLE} : ${OFF}${BLUE}N${OFF}"
     read -r user_response
-    if [[ "${user_response}" =~ ^y ]]; then
-        echo -e "${CYAN}Confirmed Response:${OFF} ${ORANGE}$user_response${OFF}
+    user_response=$(echo "$user_response" | tr '[:upper:]' '[:lower:]')
+    if [[ "$user_response" =~ ^y ]]; then
+      echo -e "${CYAN}Confirmed Response:${OFF} ${ORANGE}$user_response${OFF}
 
-                ${GREEN}Data replacing started:${OFF}" | sed 's/^[ \t]*//' | cat
+              ${GREEN}Data replacing started:${OFF}" | sed 's/^[ \t]*//' | cat
     else
         echo -e "${CYAN}Confirmed Response:${OFF} ${ORANGE}Not yet ready to start replacer, script exited.${OFF}"
-        exit 1
+        exit 0
     fi
 
     # Navigate to the loop start location.
@@ -92,14 +90,12 @@ saveAndReplaceJSONDataSet() {
         local nationality=""
         local status_code=""
 
-        local file_name=""
-        file_name=$(basename "${file}")
-        local file_directory=""
-        file_directory=$(dirname "${file}")
+        local file_name=$(basename "${file}")
+        local file_directory=$(dirname "${file}")
 
         # Safety check for unknown files.
         if [ ! -f "${file}" ]; then
-            echo -e "${RED}Error - file not found!${OFF}\n"
+            echo -e "${RED}ERROR - file not found!${OFF}\n"
             files_not_accessible+=("${file_directory}")
             continue  # Skip this file and move to the next
         fi
@@ -178,52 +174,51 @@ saveAndReplaceJSONDataSet() {
         sleep 1 # Have found that the script was not properly reading some and saving some values, this wait timer is an imperfect fix to the issue.
     done
 
-    echo -e "${GREEN}Processing complete, printing additional information if stored:${OFF}\n"
+    echo -e "${GREEN}Processing complete!${OFF}
+            ${PURPLE}Please press enter to continue to failure reporting:" | sed 's/^[ \t]*//' | cat
+    read -r user_response
+    echo -e "${CYAN}Printing additional information if available:${OFF} ${ORANGE}${FILE_PATHWAY}${OFF}"
 
-    if [ ${#files_skipped_missing_matches[@]} -gt 0 ]; then
-        echo -e "${RED}These files were skipped as they were missing expected matches:${OFF}"
-        echo -e "${ORANGE}$(printf "%s\n" "${files_skipped_missing_matches[@]}")${OFF}"
-        echo -e "${PURPLE}Recommend checking these files manually.${OFF}"
-    fi
-    if [ ${#files_with_non_200_status_codes[@]} -gt 0 ]; then
-       echo -e "${RED}These files had status codes of non 200 values:${OFF}"
-       echo -e "${ORANGE}$(printf "%s\n" "${files_with_non_200_status_codes[@]}")${OFF}"
-       echo -e "${PURPLE}Recommend checking these files manually.${OFF}"
-    fi
-    if [ ${#files_with_invalid_json[@]} -gt 0 ]; then
-        echo -e "${RED}Some files could not be processed due to invalid JSON:${OFF}"
-        echo -e "${ORANGE}$(printf "%s\n" "${files_with_invalid_json[@]}")${OFF}"
-        echo -e "${PURPLE}Recommend manually checking these files where data has not been replaced.${OFF}"
-    fi
-    if [ ${#files_not_accessible[@]} -gt 0 ]; then
-        echo -e "${RED}Some files could not be processed:${OFF}"
-        echo -e "${ORANGE}$(printf "%s\n" "${files_not_accessible[@]}")${OFF}"
-        echo -e "${YELLOW}It is possible that some files also could not be captured.${OFF}
-        ${PURPLE}Recommend manually checking these files where data has not been replaced.${OFF}" | sed 's/^[ \t]*//' | cat
-    fi
+    [[ ${#files_skipped_missing_matches[@]} -gt 0 ]] && \
+        echo -e "${RED}ERROR:${OFF} ${YELLOW}These files were skipped as they were missing expected matches:${OFF}
+                ${ORANGE}$(printf "%s\n" "${files_skipped_missing_matches[@]}")${OFF}
+                ${PURPLE}Recommend checking these files manually.${OFF}
+                " | sed 's/^[ \t]*//' | cat
 
+    [[ ${#files_with_non_200_status_codes[@]} -gt 0 ]] && \
+       echo -e "${RED}ERROR:${OFF} ${YELLOW}These files had status codes of non 200 values:${OFF}
+               ${ORANGE}$(printf "%s\n" "${files_with_non_200_status_codes[@]}")${OFF}
+               ${PURPLE}Recommend checking these files manually.${OFF}
+               " | sed 's/^[ \t]*//' | cat
+
+    [[ ${#files_with_invalid_json[@]} -gt 0 ]] && \
+        echo -e "${RED}ERROR:${OFF} ${YELLOW}Some files could not be processed due to invalid JSON:${OFF}
+                ${ORANGE}$(printf "%s\n" "${files_with_invalid_json[@]}")${OFF}
+                ${PURPLE}Recommend manually checking these files where data has not been replaced.${OFF}" | sed 's/^[ \t]*//' | cat
+
+    [[ ${#files_not_accessible[@]} -gt 0 ]] && \
+        echo -e "${RED}ERROR:${OFF} ${YELLOW}Some files could not be processed:${OFF}
+                ${ORANGE}$(printf "%s\n" "${files_not_accessible[@]}")${OFF}
+                ${YELLOW}It is possible that some files also could not be captured.${OFF}
+                ${PURPLE}It is recommended to manually checking these files where data has not been replaced.${OFF}
+                " | sed 's/^[ \t]*//' | cat
+    exit 0
 }
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 
-# This section contains the local executor for the FindAndReplace.sh script.
+# This section contains the local executor for the Json-Bulk-Replacer-With-Saved-Values.sh script.
 
 method_name="$1"
 
 # Check that a value has been passed.
-if [ -z "$method_name" ]; then
-    echo -e "${RED}Error:${OFF} ${YELLOW}No parameter passed for method selection. Choose a valid option:${OFF}
-            ${ORANGE}saveAndReplaceJSONDataSet${OFF}
-            " | sed 's/^[ \t]*//' | cat
-    exit 1
-fi
+[ -z "$method_name" ] && \
+echo -e "${RED}ERROR:${OFF} ${YELLOW}No parameter passed for method selection. Choose a valid option:${OFF}
+        ${ORANGE}saveAndReplaceJSONDataSet${OFF}
+        " | sed 's/^[ \t]*//' | cat && exit 1
 
 # Ensure that the value has been passed as a function.
-if declare -F "$1" > /dev/null; then
-    "$1"
-else
-    echo -e "${RED}Error:${OFF} ${YELLOW}Invalid method selection. Choose from:${OFF}
-            ${ORANGE}saveAndReplaceJSONDataSet${OFF}
-            " | sed 's/^[ \t]*//' | cat
-    exit 1
-fi
+declare -F "$1" > /dev/null && "$1" || \
+echo -e "${RED}ERROR:${OFF} ${YELLOW}Invalid method selection. Choose from:${OFF}
+        ${ORANGE}saveAndReplaceJSONDataSet${OFF}
+        " | sed 's/^[ \t]*//' | cat && exit 1
