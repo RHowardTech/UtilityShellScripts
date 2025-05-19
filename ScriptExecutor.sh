@@ -1,96 +1,91 @@
-#!/bin/bash
-BASE_DIR="$(dirname "$(readlink -f "$0")")"
-source "${BASE_DIR}/Declarations.sh"
+#!/usr/bin/env bash
+
+# Universal Declarations:
+: "${SHELL_SCRIPT_BASE_DIR:="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"}" # Set base directory of the script.
+main_repos_path="${HOME}/IdeaProjects" # Pathway to the directory structure that your repositories are kept in.
+
+# Source global variables and helpers
+source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/GenericFuzzySelection.sh"
 
 # Please see README.md for dependencies details.
-# Remember to complete the Dependency section before running any scripts.
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
 # This section is the general executor for the script.
 # It controls the products and methods that will be called based on user selection.
 
-sigIntCatcher(){
-# This function checks that there is a populated value passed.
-    if [ -z "$1" ]; then
-        echo -e "${RED}SigIntCatcherError:${OFF} ${YELLOW}no value passed.${OFF}"
-        exit
-    fi
+# Check if Bash is version 4+
+((BASH_VERSINFO[0] < 4)) && {
+  echo -e "${RED}ERROR:${OFF} ${YELLOW}Bash version must be 4.0 or higher. Please update your Bash.${OFF}"
+  exit 1
 }
 
-selectFunction(){
-# This function displays the methods available in the chosen method.
-
-    # Defining passed parameters as expected values.
-    local product="$1"
-
-    # This loop will select the method for execution based on user selection.
-    while true; do
-        # Set the path for the JSON config File
-        configFile="${BASE_DIR}/config/product_listings/"$(echo $product | sed 's/ /_/g')".json"
-
-        # Get the list of methods from the config file and add a 'back' option.
-        methods=($(jq -r 'keys_unsorted[]' $configFile) "back")
-
-        # Let the user select a method using fzf.
-        method=$(echo "${methods[@]}" | sed 's/ /\n/g' | fzf --height ~100% --border=rounded --border-label="$(printf " Select method from ${ORANGE}%s${OFF} you wish to execute " "${product}")")
-
-            case "$method" in
-                back)
-                    break
-                    ;;
-                *)
-                    # Ensure the method exists in the config file.
-                    sigIntCatcher "$method"
-
-                    # Get the corresponding command to execute from the JSON file.
-                    cmd=$(jq -r --arg method "$method" '.[$method]' "$configFile")
-
-                    # Ensure the command is not empty.
-                    if [ -n "$cmd" ]; then
-                        # Execute the command.
-                        echo -e "${CYAN}-----------------------------------------------------------------------------------------------------${OFF}
-                        ${GREEN}Executing the '${OFF}${ORANGE}${method}${OFF}${GREEN}' method from the '${OFF}${ORANGE}${product}${OFF}${GREEN}' product:${OFF}
-                        ${ORANGE}${BASE_DIR}/util_scripts/${method}.sh $cmd${OFF}" | sed 's/^[ \t]*//' | cat
-                        "${BASE_DIR}""/util_scripts/""${method}"".sh" "${cmd}"
-                    else
-                        echo "${RED}Error:${OFF} ${YELLOW}No command found for method${OFF} ${ORANGE}${method}${OFF}"
-                        exit 1
-                    fi
-                    ;;
-            esac
-    done
+# Opening message.
+[[ "$1" != "recursiveTrigger" ]] && \
     echo -e "
-    ${GREEN}Thank you for using this utility script.${OFF}
-    ${CYAN}-----------------------------------------------------------------------------------------------------${OFF}
-    " | sed 's/^[ \t]*//' | cat
-}
+            ${GREEN}Script Executor Started!${OFF}
+            " | sed 's/^[ \t]*//' | cat
 
 # First time user prompt.
-if [[ -z "${operating_system}" || -z "${main_repos_path}" ]]; then
-    echo -e "
-            ${PURPLE}Welcome to the utilScriptRunner, if this is your first time using the script please review the ${OFF}${BLUE}README.md${OFF}${PURPLE} file to check dependencies.
-            Also please fill out the required variables in the ${OFF}${BLUE}Declarations.sh${OFF}${PURPLE} file.
-            At a minimum the ${OFF}${BLUE}Universal Declarations${OFF}${PURPLE} section must be filled in to continue.${OFF}
+FIRST_TIME_FLAG="${HOME}/.utilScriptRunner_first_run"
+[[ ! -f "$FIRST_TIME_FLAG" ]] && {
+    echo -e "${PURPLE}Welcome to the utilScriptRunner!${OFF}
+            If this is your first time, please read ${BLUE}README.md${OFF} to ensure dependencies are set up correctly.
+            This message will only appear once.
             " | sed 's/^[ \t]*//' | cat
-    exit 1
+    touch "$FIRST_TIME_FLAG"
+}
+
+# Run fuzzy selection on config catalogue.
+GenericFuzzySelection "${SHELL_SCRIPT_BASE_DIR}/config/catalogue_of_scripts"
+
+# Check required globals
+if [[ -n "${SELECTED_KEY}" && -n "${FILE_NAME}" && -n "${RETURN_VALUE}" ]]; then
+  echo -e "${CYAN}-----------------------------------------------------------------------------------------------------${OFF}
+           ${GREEN}Executing method:${OFF} ${ORANGE}${SELECTED_KEY}${OFF}
+           ${GREEN}From JSON file:${OFF} ${ORANGE}${FILE_NAME}${OFF}
+           ${GREEN}Full command:${OFF} ${ORANGE}${SHELL_SCRIPT_BASE_DIR}/utility_scripts/${SELECTED_KEY} ${RETURN_VALUE}${OFF}
+           " | sed 's/^[ \t]*//' | cat
+else
+  echo -e "${RED}ERROR:${OFF} ${YELLOW}Missing required parameters. Check that selection and extraction succeeded.${OFF}
+          " | sed 's/^[ \t]*//' | cat && exit 1
 fi
 
-# This loop will select the product that for browsing based on user selection.
-while true; do
-    # Get the list of product files from the directory and add an 'exit' option
-    products=($(ls "${BASE_DIR}"/config/product_listings/ | grep '\.json$' | cut -f 1 -d '.') "exit")
-    [ -z "$1" ] && \
-        product=$(echo "${products[@]}" | sed -e 's/ /\n/g' -e 's/_/ /g' | fzf --height ~100% --border=rounded --border-label=" Select the product you wish to use ") ||
-        product="$1"
-    case "$product" in
-        exit)
-            exit
-            ;;
-        *)
-            sigIntCatcher "$product"
-            selectFunction "$product"
-            ;;
-    esac
-done
+# Prevent accidental execution of .json files.
+if [[ "${SELECTED_KEY}" == *.json ]]; then
+  echo -e "${YELLOW}INFO:${OFF} Selected a JSON file, continuing fuzzy navigation.${OFF}"
+  "${BASH_SOURCE[0]}"  # Rerun the ScriptExecutor for the next round.
+  exit 0
+fi
+
+# Resolve full script path.
+SCRIPT_PATH="${SHELL_SCRIPT_BASE_DIR}/utility_scripts/${SELECTED_KEY}"
+
+# Ensure the script is executable.
+[[ -f "$SCRIPT_PATH" && ! -x "$SCRIPT_PATH" ]] && chmod +x "$SCRIPT_PATH"
+
+# Execute based on file type.
+[[ ! -x "$SCRIPT_PATH" ]] && echo -e "${RED}ERROR:${OFF} ${YELLOW}The selected script has not been give executable powers.${OFF}" && exit 1
+
+# Generic execution assuming execution type is coded into the script.
+"$SCRIPT_PATH" "${RETURN_VALUE}"
+
+# Attempt execution by file type.
+#if [[ "$SCRIPT_PATH" == *.sh ]]; then
+#  bash "$SCRIPT_PATH" "${RETURN_VALUE}" && execution_success=true
+#elif [[ "$SCRIPT_PATH" == *.py ]]; then
+#  python3 "$SCRIPT_PATH" "${RETURN_VALUE}" && execution_success=true
+#elif [[ "$SCRIPT_PATH" == *.jar ]]; then
+#  java -jar "$SCRIPT_PATH" "${RETURN_VALUE}" && execution_success=true
+#else
+#  echo -e "${YELLOW}WARN: Unsupported file type, attempting generic execution:"
+#  "$SCRIPT_PATH" "${RETURN_VALUE}"
+#fi
+
+echo -e "${CYAN}-----------------------------------------------------------------------------------------------------${OFF}"
+
+# Re-run the executor unless explicitly exited.
+"${BASH_SOURCE[0]}" "recursiveTrigger"
 
 # ——————————————————————————————————————————————————————————————————————————————————————————————————————
+
