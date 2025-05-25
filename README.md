@@ -8,7 +8,18 @@ Some of these script are also designed for use on **macOS Devices Only**.
 ## Script Requirements / Dependencies
 
 This script assumes the following in order to function properly:
-1) The script assumes that all the repositories that you wish to work with are stored in a central location within the folder structure **~/IdeaProjects**.
+1) The script assumes that all the repositories that you wish to work with are stored in a central location within the folder structure.
+   This is defined within the file **Declarations.sh** by default set as **~/IdeaProjects**. Please change the pathway to match your local system's root for all repositories.
+   E.G.
+   ```
+   ${USER_ROOT_PATH}/Your/Path/From/Root/To/Repository/Root
+   ```
+   Ideally all repositories should be on the same level, directly inside this defined folder. After you adjusted the pathway to your definition you can use the following command to have git ignore the change:
+   ```
+   git update-index --assume-unchanges ${FilePath}
+   git update-index --no-assume-unchanged ${FilePath}
+   ```
+
 2) Some scripts may have additional ReadMe files, ensure to read any related files before using the scripts to ensure you have covered any required dependencies.
 3) Some scripts may require you to locally edit their values saved in **Declarations.sh**, if required the script will prompt you to do so at run time.
 4) That you have The following software installed.
