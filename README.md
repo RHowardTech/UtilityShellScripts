@@ -29,7 +29,6 @@ If you are using Windows you can also use Scoop to install these programs with c
   ```
   scoop install git        #(Required for Scoop itself).
   scoop install fzf
-  scoop install bash
   scoop install jq
   ```
 
