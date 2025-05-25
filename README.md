@@ -71,4 +71,25 @@ For new scripts please conform to using the Colour and Logging controllers as de
         
    chsh -s /opt/homebrew/bin/bash
    ```
-2) Add further FAQs here...
+
+2) If you should run into trouble using the following commands:
+   ```
+   git update-index --assume-unchanges ${FilePath}
+   git update-index --no-assume-unchanged ${FilePath}
+   ```
+   Use this command to restore the working tree file paths.
+   If a path is tracked but does not exist in the restore source, it will be removed to match the source.
+   ```
+   git restore .
+   ```
+
+3) If running the scripts using a Windows OS you may find that your scripts are opening in separate terminal windows 
+   and closing immediately on error before you can read the code.
+   
+   As a work-around to this you can run the main executor script with the following command:
+   
+   ```
+   "Path/To/bash.exe" --noprofile --norc "Path/To/ScriptExecutor.sh"
+   ```
+
+3) Add further FAQs here...
