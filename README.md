@@ -21,7 +21,9 @@ This script assumes the following in order to function properly:
    ```
 
 2) Some scripts may have additional ReadMe files, ensure to read any related files before using the scripts to ensure you have covered any required dependencies.
+
 3) Some scripts may require you to locally edit their values saved in **Declarations.sh**, if required the script will prompt you to do so at run time.
+
 4) That you have The following software installed.
      1) Homebrew (https://brew.sh/) for macOS users only.
      2) Scoop (https://scoop.sh/) for Windows users only.
@@ -102,5 +104,3 @@ For new scripts please conform to using the Colour and Logging controllers as de
    ```
    "Path/To/bash.exe" --noprofile --norc "Path/To/ScriptExecutor.sh"
    ```
-
-3) Add further FAQs here...
