@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
-source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/AuthoriseApplication.sh"
-source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/CheckAndNavigate.sh"
-source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/FilterListsForMatches.sh"
-source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/OperatingSystemCheck.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/util_scripts/helpers/AuthoriseApplication.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/util_scripts/helpers/CheckAndNavigate.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/util_scripts/helpers/FilterListsForMatches.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/util_scripts/helpers/OperatingSystemCheck.sh"
 
 # Please see README.md for dependencies details.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 SHELL_SCRIPT_BASE_DIR="$(dirname "$(readlink -f "$0")")/.."
 source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
-source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/ProcessSerenityReport.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/util_scripts/helpers/ProcessSerenityReport.sh"
 
 # Please see README.md for dependencies details.
 

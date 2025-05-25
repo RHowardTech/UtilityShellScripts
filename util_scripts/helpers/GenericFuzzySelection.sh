@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
-source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/SetValueFromSelectedJsonIdentifier.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/util_scripts/helpers/SetValueFromSelectedJsonIdentifier.sh"
 
 # Please see README.md for dependencies details.
 

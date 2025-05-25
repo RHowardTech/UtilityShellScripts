@@ -6,7 +6,7 @@ main_repos_path="${HOME}/IdeaProjects" # Pathway to the directory structure that
 
 # Source global variables and helpers
 source "${SHELL_SCRIPT_BASE_DIR}/Declarations.sh"
-source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/GenericFuzzySelection.sh"
+source "${SHELL_SCRIPT_BASE_DIR}/util_scripts/helpers/GenericFuzzySelection.sh"
 
 # Please see README.md for dependencies details.
 
@@ -17,7 +17,7 @@ source "${SHELL_SCRIPT_BASE_DIR}/utility_scripts/helpers/GenericFuzzySelection.s
 # Check if Bash is version 4+
 ((BASH_VERSINFO[0] < 4)) && {
   echo -e "${RED}ERROR:${OFF} ${YELLOW}Bash version must be 4.0 or higher. Please update your Bash.${OFF}"
-  exit 1
+#  exit 1
 }
 
 # Opening message.
